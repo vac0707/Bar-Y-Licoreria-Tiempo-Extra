@@ -23,7 +23,7 @@ const ASSETS = {
   logoStatic: 'https://res.cloudinary.com/dcnynnstm/image/upload/v1778103424/logo_bar_t3peko.jpg',
   locationUrl: 'https://maps.app.goo.gl/eRvcWnBveFjHqAHz6',
   whatsappUrl: 'https://wa.me/51925782415',
-  eventDate: new Date('2026-05-06T18:00:00'),
+  eventDate: new Date('2026-05-09T18:00:00'),
   bgVideos: [
     'https://res.cloudinary.com/dcnynnstm/video/upload/v1778104314/NUEVO_01_qpve8d.mp4',
     'https://res.cloudinary.com/dcnynnstm/video/upload/v1778104394/Encuentra_tragos_discoteca_en_TikTok_-_Busca_contenido_en_TikTok_2_f8kzuc.mp4',
@@ -327,7 +327,7 @@ export default function App() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                 <div className="space-y-1">
                   <p className="text-[10px] uppercase tracking-[0.2em] text-white/50 mb-2">Cuándo</p>
-                  <p className="text-xl font-bold font-display">SÁBADO 06 DE MAYO</p>
+                  <p className="text-xl font-bold font-display">SÁBADO 09 DE MAYO</p>
                   <p className="text-sm text-brand-blue">06:00 PM - LATE NIGHT</p>
                 </div>
                 <div className="md:border-l border-white/10 space-y-1 md:pl-8">
