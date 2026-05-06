@@ -29,7 +29,8 @@ const ASSETS = {
     'https://res.cloudinary.com/dcnynnstm/video/upload/v1778104394/Encuentra_tragos_discoteca_en_TikTok_-_Busca_contenido_en_TikTok_2_f8kzuc.mp4',
     'https://res.cloudinary.com/dcnynnstm/video/upload/v1778104402/CAMBIO_03_zjhchw.mp4',
     'https://res.cloudinary.com/dcnynnstm/video/upload/v1778104420/CAMBIO_04_tygsbx.mp4'
-  ]
+  ],
+  music: 'https://res.cloudinary.com/dcnynnstm/video/upload/v1778106331/nebula-bistro-76147_femo7j.mp3'
 };
 
 // --- Components ---
@@ -152,7 +153,10 @@ const Countdown = ({ targetDate }: { targetDate: Date }) => {
 };
 
 export default function App() {
+  const [isStarted, setIsStarted] = useState(false);
   const [isIntroFinished, setIsIntroFinished] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -163,37 +167,60 @@ export default function App() {
   const logoScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.8]);
   const bgOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0.7]);
 
-  // Handle Intro Timeout
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsIntroFinished(true);
-    }, 5500); // Intro video duration approx
-    return () => clearTimeout(timer);
-  }, []);
+  // Handle Intro Logic (Simplified)
+  const handleStart = () => {
+    setIsStarted(true);
+    setIsIntroFinished(true); // Skip secondary intro
+    if (audioRef.current) {
+      audioRef.current.play().catch(e => console.log("Audio play blocked", e));
+    }
+  };
+
+  const toggleMute = () => {
+    if (audioRef.current) {
+      audioRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
 
   return (
     <div className="relative min-h-screen bg-gradient-main text-white font-sans overflow-x-hidden selection:bg-brand-blue/30">
       
+      <audio ref={audioRef} src={ASSETS.music} loop />
+      
       <VideoBackground />
 
-      {/* Intro Layer */}
+      {/* Starter Screen (Animated Logo + Experience Trigger) */}
       <AnimatePresence>
-        {!isIntroFinished && (
+        {!isStarted && (
           <motion.div 
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1 }}
-            className="fixed inset-0 z-[100] bg-black flex items-center justify-center"
+            className="fixed inset-0 z-[110] bg-black flex flex-col items-center justify-center p-6 text-center"
           >
-            <video 
+            <motion.video 
               autoPlay 
               muted 
-              playsInline 
-              onEnded={() => setIsIntroFinished(true)}
-              className="max-w-[90%] md:max-w-2xl"
+              loop
+              playsInline
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="w-64 md:w-80 mb-12 drop-shadow-[0_0_30px_rgba(0,210,255,0.5)]"
             >
               <source src={ASSETS.logoVideo} type="video/mp4" />
-            </video>
+            </motion.video>
+            
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="space-y-8"
+            >
+              <h2 className="text-2xl font-black tracking-tighter uppercase italic text-brand-orange glow-orange">Invitación Exclusiva</h2>
+              <CustomButton onClick={handleStart} primary icon={Music}>
+                Comenzar Experiencia
+              </CustomButton>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -463,6 +490,22 @@ export default function App() {
             </div>
           </div>
         </footer>
+
+        {/* Mute Toggle */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isStarted ? 1 : 0 }}
+          className="fixed bottom-6 left-6 z-50"
+        >
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={toggleMute}
+            className="w-12 h-12 glass rounded-full flex items-center justify-center text-white/70 hover:text-white transition-colors"
+          >
+            {isMuted ? <Music size={20} className="opacity-40" /> : <Music2 size={20} className="text-brand-blue" />}
+          </motion.button>
+        </motion.div>
 
         {/* Mobile Sticky CTA */}
         <motion.div 
